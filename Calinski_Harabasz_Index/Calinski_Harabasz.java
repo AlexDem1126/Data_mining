@@ -1,4 +1,4 @@
-package FP_AD_Fall2017;
+package calinski_harabasz;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class Calinski_Harabasz {
 			//find convergence or sum of squared within-cluster scatter matrix (SSW)
 			sSW = newSSW;				
 //			newSSE = findConverge(centroidsAttrAverage, threshold);
-			newSSW = findConverge(centroids, updatedCentroids, threshold);
+			newSSW = findConverge(updatedCentroids);
 			iterationConverges++;	
 				
 				if(sSW==newSSW){
@@ -361,7 +361,7 @@ public class Calinski_Harabasz {
 
 		
 		//5. find convergence or sum of squared within-cluster scatter matrix (SSW)
-		private double findConverge(double[][] center_old, double[][] center_new, double threshold) {
+		private double findConverge(double[][] center_new) {
 		double temp_sSW = 0.0;
 		double d = 0.0;
 		for (int i = 0; i < numOfPoints; i++) {
