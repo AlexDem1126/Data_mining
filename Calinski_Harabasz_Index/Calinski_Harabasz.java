@@ -13,8 +13,8 @@ public class Calinski_Harabasz {
 	private int[] sizeOfCluster;
 	private double[][] centroidsAttrAverage;
 	private double[] meanOfAverage;
-	private double sSW;
-	private double sSB;
+	private double sSW; 	//sum of squared within-cluster scatter matrix (SSW)
+	private double sSB; 	//sum of squared between-cluster scatter matrix (SSB) 
 
 	
 	
@@ -45,7 +45,6 @@ public class Calinski_Harabasz {
 		double[][] updatedCentroids = centroids; 	//new initial centroid (updated)
 		int iterationConverges = 0; 				//numbers of iteration before converging
 		double newSSW = 0;							//sum of squared within-cluster scatter matrix (SSW) 
-//		double sSB = 0; 							//sum of squared between-cluster scatter matrix (SSB) 
 		
 		//repeat until convergence
 		while (true) {
@@ -66,30 +65,20 @@ public class Calinski_Harabasz {
 		
 			//5. calculation of SSE improvement
 			//find convergence or sum of squared within-cluster scatter matrix (SSW)
-			sSW = newSSW;				
-//			newSSE = findConverge(centroidsAttrAverage, threshold);
+			sSW = newSSW;
 			newSSW = findConverge(updatedCentroids);
 			iterationConverges++;	
 				
 				if(sSW==newSSW){
-					System.out.println("\n\nIteration " + iterationConverges + ": " + sSW +", "+ sSB);
-					//display updatedCentroids - Final
-					displayUpdatedCentroidsAttr(updatedCentroids);
-					
-					//display Points of Dataset - Final
-					displayUpdatedPoints(point);
+					System.out.println("Iteration " + iterationConverges + ": " + "sSW = "+ sSW +", sSB = "+ sSB);
 					
 					//count number of points in clusters - Final
 					clustersSize(point);
-					System.out.println("\n\nFinal SSW: " + sSW);
-					System.out.println("\n\nFinal SSB: " + sSB);
+					System.out.println("\nFinal SSW: " + sSW);
+					System.out.println("Final SSB: " + sSB);
 					break;
 				}else{
-					System.out.println("\n\nIteration " + iterationConverges + ": " + newSSW +", "+ sSB);					
-					//display updatedCentroids
-					displayUpdatedCentroidsAttr(updatedCentroids);	
-					
-
+					System.out.println("Iteration " + iterationConverges + ": " + "sSW = "+ newSSW +", sSB = "+ sSB);
 				}			
 				if ((newSSW < threshold) || ((nIterations > 0) && (iterationConverges >= nIterations))) {
 					break;
@@ -325,32 +314,8 @@ public class Calinski_Harabasz {
 		return temp_sSW;
 	}
 
-
-			
-		//display updatedCentroids attributes
-		private void displayUpdatedCentroidsAttr(double[][] updatedCentroidsF) {
-			System.out.println("Updated Centroids:");
-			for (int i = 0; i < numOfClusters; i++) {
-				for (int j = 0; j < numOfDimension; j++) {
-					System.out.print(updatedCentroidsF[i][j] +" ");//							
-				}
-				System.out.println();
-			}		
-		}
 		
-		
-		
-		//display UpdatedPoints
-		private void displayUpdatedPoints(int[] point2) {			
-			System.out.print("Points: ");
-			for (int i = 0; i < numOfPoints; i++) {
-				System.out.print(point[i]+", ");
-			}
-			
-		}
-		
-		
-		
+	
 		//count number of points in clusters
 		private void clustersSize(int[] point2) {
 			int[] cSize = new int[numOfClusters];
