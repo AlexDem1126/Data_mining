@@ -40,12 +40,12 @@ public class myMain {
 				
 			} catch (NumberFormatException e) {
 				System.out.println(
-						"Input format should be: <file name.txt> or <file name.csv>");
+						"Input format should be: <file name.data> or <file name.txt> or <file name.csv>");
 				System.exit(1);
 			}
 		} else {
 			System.out.println(
-					"Input format should be: <file name.txt> or <file name.csv>");
+					"Input format should be: <file name.data> or <file name.txt> or <file name.csv>");
 		}	
 
 	}
