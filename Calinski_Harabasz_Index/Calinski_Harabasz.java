@@ -10,6 +10,7 @@ public class Calinski_Harabasz {
 	private double[][] centroids;
 	private double threshold;
 	private int[] point;
+	private int[] sizeOfCluster;
 	private double[][] centroidsAttrAverage;
 	private double[] meanOfAverage;
 	private double sSW;
@@ -60,10 +61,11 @@ public class Calinski_Harabasz {
 			//3. update claster's centroid
 			updatedCentroids = updateClusterCentroid();	
 			
-			//Find SSB (Total sum between)
-//			sSB = findSSB(updatedCentroids);
+			//4. find sum of squared between-cluster scatter matrix (SSB)
+			sSB = findSSB();
 		
-			//4. calculation of SSE improvement
+			//5. calculation of SSE improvement
+			//find convergence or sum of squared within-cluster scatter matrix (SSW)
 			sSW = newSSW;				
 //			newSSE = findConverge(centroidsAttrAverage, threshold);
 			newSSW = findConverge(centroids, updatedCentroids, threshold);
@@ -192,7 +194,7 @@ public class Calinski_Harabasz {
 	
 		//3. update claster's centroid
 		private double[][] updateClusterCentroid() {
-			int[] sizeOfCluster = new int[numOfClusters];
+			sizeOfCluster = new int[numOfClusters];
 			double[][] centroidsAttrSum = new double[numOfClusters][]; //****
 			centroidsAttrAverage = new double[numOfClusters][];
 			meanOfAverage = new double[numOfClusters];
@@ -213,7 +215,7 @@ public class Calinski_Harabasz {
 			
 
 			//3.1 assign points to a centroid and sum their attributes
-			centroidsAttrSum = findCentroidsAttrSum(centroidsAttrSum, sizeOfCluster);
+			centroidsAttrSum = findCentroidsAttrSum(centroidsAttrSum);
 //			for (int i = 0; i < numOfPoints; i++) {				
 //				int cluster = point[i];
 //				
@@ -226,7 +228,7 @@ public class Calinski_Harabasz {
 
 			
 			//3.2 find average of the centroids' attributes 
-			centroidsAttrAverage = findCentroidsAttrAverage(centroidsAttrSum, sizeOfCluster);
+			centroidsAttrAverage = findCentroidsAttrSum(centroidsAttrSum);
 //			for (int i = 0; i < numOfClusters; i++) {
 //				for (int j = 0; j < numOfDimension; j++) {
 //					centroidsAttrAverage[i][j] = centroidsAttrSum[i][j] / sizeOfCluster[i]; 
@@ -234,51 +236,53 @@ public class Calinski_Harabasz {
 //			}
 			
 			
-			//3.3 find mean of the average of the centroids' attributes			
+			//3.3 find mean of the average of the centroids' attributes
+			meanOfAverage = findMeanOfAverage();
 //			double[] meanOfAverage = new double[numOfClusters];
-			for (int i = 0; i < numOfClusters; i++) {
-				for (int j = 0; j < numOfDimension; j++) {
-					meanOfAverage[i] = meanOfAverage[i] + centroidsAttrAverage[i][j];					
-				}
-				meanOfAverage[i] = meanOfAverage[i] / numOfDimension;
-			}			
+//			for (int i = 0; i < numOfClusters; i++) {
+//				for (int j = 0; j < numOfDimension; j++) {
+//					meanOfAverage[i] = meanOfAverage[i] + centroidsAttrAverage[i][j];					
+//				}
+//				meanOfAverage[i] = meanOfAverage[i] / numOfDimension;
+//			}			
 			
 			
-			double sB = 0;
-			//Find SSB (Total sum of squares between)
-			for (int i = 0; i < numOfClusters; i++) {				
-				for (int j = 0; j < numOfDimension; j++) {
-					//MM = Mean - MeanOfMean
-					double MM = centroidsAttrAverage[i][j] - meanOfAverage[i];
-					double MM2 = MM*MM;
-					//sB = sizeOfCluster*MM2
-					sB = sizeOfCluster[i] * MM2;
-				}
-				sSB += sB;							
-			}
+//			//???3.4 Find sum of squared between-cluster scatter matrix (SSB)
+//			double sB = 0;
+//			//Find SSB (Total sum of squares between)
+//			for (int i = 0; i < numOfClusters; i++) {				
+//				for (int j = 0; j < numOfDimension; j++) {
+//					//MM = Mean - MeanOfMean
+//					double MM = centroidsAttrAverage[i][j] - meanOfAverage[i];
+//					double MM2 = MM*MM;
+//					//sB = sizeOfCluster*MM2
+//					sB = sizeOfCluster[i] * MM2;
+//				}
+//				sSB += sB;							
+//			}
 			
 			
 						
-			//find new attributes for centroids (Convert attributes values to 0 and 1)
-			for (int i = 0; i < numOfClusters; i++) {
-				for (int j = 0; j < numOfDimension; j++) {
-					if(centroidsAttrAverage[i][j] < meanOfAverage[i]){
-						newCentroidsAttr[i][j] = 0; 
-					}
-					else {
-						newCentroidsAttr[i][j] = 1; 
-					}					
-				}				
-			}
+			//3.4 find new attributes for centroids (Convert attributes values to 0 and 1)
+			newCentroidsAttr = findNewCentroidsAttr(newCentroidsAttr);
 			
-			
+//			for (int i = 0; i < numOfClusters; i++) {
+//				for (int j = 0; j < numOfDimension; j++) {
+//					if(centroidsAttrAverage[i][j] < meanOfAverage[i]){
+//						newCentroidsAttr[i][j] = 0; 
+//					}
+//					else {
+//						newCentroidsAttr[i][j] = 1; 
+//					}					
+//				}				
+//			}			
 			return newCentroidsAttr;
 		}
 		
 		
 		
 		//3.1 assign points to a centroid and sum their attributes
-		private double[][] findCentroidsAttrSum(double[][] centroidsAttrSum_F, int[] sizeOfCluster_F){
+		private double[][] findCentroidsAttrSum(double[][] centroidsAttrSum_F){
 			//assign points to a centroid and sum their attributes	
 			for (int i = 0; i < numOfPoints; i++) {				
 				int cluster = point[i];
@@ -287,7 +291,7 @@ public class Calinski_Harabasz {
 				for (int j = 0; j < numOfDimension; j++) {	
 					centroidsAttrSum_F[cluster][j] = centroidsAttrSum_F[cluster][j] + dataset[i][j];
 				}
-				sizeOfCluster_F[cluster]++;
+				sizeOfCluster[cluster]++;
 			}
 			return centroidsAttrSum_F;
 		}
@@ -304,9 +308,59 @@ public class Calinski_Harabasz {
 			return centroidsAttrAverage;
 		}
 
+		
+		
+		//3.3 find mean of the average of the centroids' attributes
+		private double[] findMeanOfAverage(){
+			for (int i = 0; i < numOfClusters; i++) {
+				for (int j = 0; j < numOfDimension; j++) {
+					meanOfAverage[i] = meanOfAverage[i] + centroidsAttrAverage[i][j];					
+				}
+				meanOfAverage[i] = meanOfAverage[i] / numOfDimension;
+			}		
+			return meanOfAverage;
+		}
+			
+		
+				
+		//3.4 find new attributes for centroids (Convert attributes values to 0 and 1)
+		private double[][] findNewCentroidsAttr(double[][] newCentroidsAttr){
+			for (int i = 0; i < numOfClusters; i++) {
+				for (int j = 0; j < numOfDimension; j++) {
+					if(centroidsAttrAverage[i][j] < meanOfAverage[i]){
+						newCentroidsAttr[i][j] = 0; 
+					}
+					else {
+						newCentroidsAttr[i][j] = 1; 
+					}					
+				}				
+			}
+			return newCentroidsAttr;
+		}
+		
+		
+		
+		//4. Find sum of squared between-cluster scatter matrix (SSB)
+		private double findSSB(){
+			double sB = 0;
+			double sSB = 0;
+			
+			for (int i = 0; i < numOfClusters; i++) {				
+				for (int j = 0; j < numOfDimension; j++) {
+					//MM = Mean - MeanOfMean
+					double MM = centroidsAttrAverage[i][j] - meanOfAverage[i];
+					double MM2 = MM*MM;
+					//sB = sizeOfCluster*MM2
+					sB = sizeOfCluster[i] * MM2;
+				}
+				sSB += sB;							
+			}
+			return sSB;
+		}
+		
 
 		
-		//4. find convergence
+		//5. find convergence or sum of squared within-cluster scatter matrix (SSW)
 		private double findConverge(double[][] center_old, double[][] center_new, double threshold) {
 		double temp_sSW = 0.0;
 		double d = 0.0;
@@ -315,35 +369,13 @@ public class Calinski_Harabasz {
 			int cluster = point[i];
 			d = distance ( dataset[i], center_new[cluster] );
 			double dd = d*d;
-			temp_sSW += dd; //SSW == SSE						
+			temp_sSW += dd; //temp_sSW or SSW == SSE (sum of squared errors of prediction)						
 		}
 		return temp_sSW;
 	}
 
 
-		
-//		//find SSB
-//		private double findSSB(double[][] center_old, double[][] center_new, double threshold) {
-//			double sSB = 0.0;
-//			
-////			point = new int[numOfPoints];			
-////			for (int i = 0; i < numOfPoints; i++) {
-////				//2. find points which are the nearest to a centroid
-////				point[i] = nearest(dataset[i]);
-////			}
-//			
-//			for (int i = 0; i < numOfClusters; i++) {
-//				//assign points to a cluster				
-//				int cluster = point[i];
-//				int[] AttrAverage = centroidsAttrAverage[i][j];
-//				for (int j = 0; j < numOfDimension; j++) {
-//				sSB += distance(centroidsAttrAverage, center_new[cluster] );
-//			}
-//		return sSB; //sSB/numOfClusters
-//		}
-		
-				
-		
+			
 		//display updatedCentroids attributes
 		private void displayUpdatedCentroidsAttr(double[][] updatedCentroidsF) {
 			System.out.println("Updated Centroids:");
