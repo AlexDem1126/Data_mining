@@ -216,66 +216,19 @@ public class Calinski_Harabasz {
 
 			//3.1 assign points to a centroid and sum their attributes
 			centroidsAttrSum = findCentroidsAttrSum(centroidsAttrSum);
-//			for (int i = 0; i < numOfPoints; i++) {				
-//				int cluster = point[i];
-//				
-//				//add attributes to points and sum them
-//				for (int j = 0; j < numOfDimension; j++) {	
-//					centroidsAttrSum[cluster][j] = centroidsAttrSum[cluster][j] + dataset[i][j];
-//				}
-//				sizeOfCluster[cluster]++;
-//			}
-
+			
 			
 			//3.2 find average of the centroids' attributes 
-			centroidsAttrAverage = findCentroidsAttrSum(centroidsAttrSum);
-//			for (int i = 0; i < numOfClusters; i++) {
-//				for (int j = 0; j < numOfDimension; j++) {
-//					centroidsAttrAverage[i][j] = centroidsAttrSum[i][j] / sizeOfCluster[i]; 
-//				}
-//			}
+			centroidsAttrAverage = findCentroidsAttrAverage(centroidsAttrSum);
 			
 			
 			//3.3 find mean of the average of the centroids' attributes
 			meanOfAverage = findMeanOfAverage();
-//			double[] meanOfAverage = new double[numOfClusters];
-//			for (int i = 0; i < numOfClusters; i++) {
-//				for (int j = 0; j < numOfDimension; j++) {
-//					meanOfAverage[i] = meanOfAverage[i] + centroidsAttrAverage[i][j];					
-//				}
-//				meanOfAverage[i] = meanOfAverage[i] / numOfDimension;
-//			}			
-			
-			
-//			//???3.4 Find sum of squared between-cluster scatter matrix (SSB)
-//			double sB = 0;
-//			//Find SSB (Total sum of squares between)
-//			for (int i = 0; i < numOfClusters; i++) {				
-//				for (int j = 0; j < numOfDimension; j++) {
-//					//MM = Mean - MeanOfMean
-//					double MM = centroidsAttrAverage[i][j] - meanOfAverage[i];
-//					double MM2 = MM*MM;
-//					//sB = sizeOfCluster*MM2
-//					sB = sizeOfCluster[i] * MM2;
-//				}
-//				sSB += sB;							
-//			}
-			
 			
 						
 			//3.4 find new attributes for centroids (Convert attributes values to 0 and 1)
-			newCentroidsAttr = findNewCentroidsAttr(newCentroidsAttr);
+			newCentroidsAttr = findNewCentroidsAttr(newCentroidsAttr);	
 			
-//			for (int i = 0; i < numOfClusters; i++) {
-//				for (int j = 0; j < numOfDimension; j++) {
-//					if(centroidsAttrAverage[i][j] < meanOfAverage[i]){
-//						newCentroidsAttr[i][j] = 0; 
-//					}
-//					else {
-//						newCentroidsAttr[i][j] = 1; 
-//					}					
-//				}				
-//			}			
 			return newCentroidsAttr;
 		}
 		
@@ -283,7 +236,6 @@ public class Calinski_Harabasz {
 		
 		//3.1 assign points to a centroid and sum their attributes
 		private double[][] findCentroidsAttrSum(double[][] centroidsAttrSum_F){
-			//assign points to a centroid and sum their attributes	
 			for (int i = 0; i < numOfPoints; i++) {				
 				int cluster = point[i];
 				
@@ -299,10 +251,10 @@ public class Calinski_Harabasz {
 		
 		
 		//3.2 find average of the centroids' attributes 
-		private double[][] findCentroidsAttrAverage(double[][] centroidsAttrSum_F, int[] sizeOfCluster_F){
+		private double[][] findCentroidsAttrAverage(double[][] centroidsAttrSum_F){
 			for (int i = 0; i < numOfClusters; i++) {
 				for (int j = 0; j < numOfDimension; j++) {
-					centroidsAttrAverage [i][j] = centroidsAttrSum_F[i][j] / sizeOfCluster_F[i]; 
+					centroidsAttrAverage [i][j] = centroidsAttrSum_F[i][j] / sizeOfCluster[i]; 
 				}
 			}
 			return centroidsAttrAverage;
@@ -341,19 +293,18 @@ public class Calinski_Harabasz {
 		
 		
 		//4. Find sum of squared between-cluster scatter matrix (SSB)
-		private double findSSB(){
-			double sB = 0;
-			double sSB = 0;
-			
-			for (int i = 0; i < numOfClusters; i++) {				
+		//calculation how much of the variation is due to variation between mean and mean of mean
+		private double findSSB(){			
+			double sSB = 0;			
+			for (int i = 0; i < numOfClusters; i++) {	
+				double sB = 0;				
 				for (int j = 0; j < numOfDimension; j++) {
-					//MM = Mean - MeanOfMean
+					
 					double MM = centroidsAttrAverage[i][j] - meanOfAverage[i];
-					double MM2 = MM*MM;
-					//sB = sizeOfCluster*MM2
-					sB = sizeOfCluster[i] * MM2;
+					double MM2 = MM*MM;					
+					sB += sizeOfCluster[i] * MM2; //squared between
 				}
-				sSB += sB;							
+				sSB += sB; //sum of squared between							
 			}
 			return sSB;
 		}
