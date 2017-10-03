@@ -26,10 +26,19 @@ public class Calinski_Harabasz {
 	
 	
 	
-	public double getsSB() {
+	public double getSSW() {
+		return sSW;
+	}
+	public void setSSW(double sSW) {
+		this.sSW = sSW;
+	}
+
+
+
+	public double getSSB() {
 		return sSB;
 	}
-	public void setsSB(double sSB) {
+	public void setSSB(double sSB) {
 		this.sSB = sSB;
 	}
 	
@@ -335,7 +344,10 @@ public class Calinski_Harabasz {
 
 		
 		
-		public double kCalinski_Harabasz_Index() {
+		public double kCalinski_Harabasz_Index(double[] sSW_R_F, double[] sSB_R_F) {
+			double[] sSW_R = sSW_R_F;
+			double[] sSB_R = sSB_R_F;
+			
 			double traceSSW = findTraceSSW();
 			double traceSSB = findTraceSSB();
 			
