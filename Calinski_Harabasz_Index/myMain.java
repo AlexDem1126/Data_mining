@@ -1,4 +1,4 @@
-package FP_AD_Fall2017;
+package calinski_harabasz;
 
 public class myMain {
 
@@ -31,30 +31,33 @@ public class myMain {
 				int k_Max = (int)Math.sqrt(objMF.getNumOfPoints() / 2);
 				System.out.println("k_Max: " + k_Max);
 				
-				while (R > 0) {
-					System.out.println("\nRun " + (count + 1) + "\n============================");
-					objCH.kMeanClusteringForCH(K, I, T, null); //cluster, iteration, threshold, centroid
-					R--;
-					count++;
+				double[] sSW_R = new double[R]; 	//for run number R: sum of squared within-cluster scatter matrix (SSW) 
+				double[] sSB_R = new double[R]; 	//for run number R: sum of squared between-cluster scatter matrix (SSB) 				
+				
+				double[] CH = new double[k_Max - 1]; //Calinski-Harabasz Index (CH)
+				int countCH = 0;
+				
+				while(k_Min <= k_Max){
+					for (int i=0; i<R; i++){
+						sSW_R[i] = 0;
+						sSB_R[i] = 0;
+					}
+					
+					while (R > 0) {
+						System.out.println("\nRun " + (count + 1) + "\n============================");
+						objCH.kMeanClusteringForCH(k_Min, I, T, null); //cluster, iteration, threshold, centroid
+						sSW_R[R] = objCH.getSSW();
+						sSB_R[R] = objCH.getSSB();						
+						R--;
+						count++;
+					}
+					
+					objCH.kCalinski_Harabasz_Index(sSW_R, sSB_R);
+					k_Min++;
 				}
-				/*********** END Calinski-Harabasz Index (CH) ***********/	
 				
-				
-				
-				//******************************************************************
-				/*********** Kmeans ***********/
-				//******************************************************************
-//				kmeans objKmeans = new kmeans(objMF.getDataset(), objMF.getNumOfPoints(), objMF.getNumOfDimension());
-//				
-//				int count = 0;
-//				System.out.println("***** Kmeans *****");
-//				while (R > 0) {
-//					System.out.println("\nRun " + (count + 1) + "\n============================");
-//					objKmeans.kMeanClustering(K, I, T, null); //cluster, iteration, threshold, centroid
-//					R--;
-//					count++;
-//				}
-				/*********** END Kmeans ***********/
+				/*********** END Calinski-Harabasz Index (CH) ***********/				
+		
 				
 				
 			} catch (NumberFormatException e) {
