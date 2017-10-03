@@ -344,12 +344,15 @@ public class Calinski_Harabasz {
 
 		
 		
-		public double kCalinski_Harabasz_Index(double[] sSW_R_F, double[] sSB_R_F) {
-			double[] sSW_R = sSW_R_F;
-			double[] sSB_R = sSB_R_F;
+		public double kCalinski_Harabasz_Index(double sSW_Smallest, double sSB_Highest) {
+			double sSW_S = sSW_Smallest;
+			double sSB_H = sSB_Highest;
 			
-			double traceSSW = findTraceSSW();
-			double traceSSB = findTraceSSB();
+			//lower overall intracluster distance (within-cluster scatter matrices)
+			double traceSSW = sSW_S/numOfClusters;
+			
+			//higher overall intercluster distance (between-cluster scatter matrices)
+			double traceSSB = sSB_H/numOfClusters;
 			
 			//Calinski_Harabasz_Index
 			double CH_Index = ((numOfPoints - numOfClusters)/(numOfClusters - 1))*(traceSSB/traceSSW);
@@ -357,18 +360,19 @@ public class Calinski_Harabasz {
 		}
 
 
-
-		//lower overall intracluster distance (within-cluster scatter matrices)
-		private double findTraceSSW() {
-			double traceSSW_F = sSW/numOfClusters;
-			return traceSSW_F;
-		}
 		
-
-		//higher overall intercluster distance (between-cluster scatter matrices)
-		private double findTraceSSB() {
-			double traceSSB_F = sSB/numOfClusters;
-			return traceSSB_F;
+		//find smallest SSW
+		public int findSmallestSSW(double[] sSW_R_F) {
+			double[] sSW_R = sSW_R_F;
+			int indexSSW = 0;
+			double smallest = sSW_R[0];
+			for(int i = 0; i < sSW_R.length; i++){
+				if(sSW_R[i] < smallest){
+					smallest = sSW_R[i];
+					indexSSW = i;
+				}
+			}
+			return indexSSW;
 		}
 
 }
