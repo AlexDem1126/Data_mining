@@ -86,9 +86,8 @@ public class Calinski_Harabasz {
 		}
 		System.out.println("Converges at iteration " + iterationConverges + "\n");			
 	}
-
-
-
+	
+	
 
 	// 1. generate pseudo random centroids
 	private double[][] generateCentroids() {
@@ -333,5 +332,30 @@ public class Calinski_Harabasz {
 			}
 		}
 
+
+		
+		
+		public void kCalinski_Harabasz_Index() {
+			double traceSSW = findTraceSSW();
+			double traceSSB = findTraceSSB();
+			
+			//Calinski_Harabasz_Index
+			
+		}
+
+
+
+		//lower overall intracluster distance (within-cluster scatter matrices)
+		private double findTraceSSW() {
+			double traceSSW_F = sSW/numOfClusters;
+			return traceSSW_F;
+		}
+		
+
+		//higher overall intercluster distance (between-cluster scatter matrices)
+		private double findTraceSSB() {
+			double traceSSB_F = sSB/numOfClusters;
+			return traceSSB_F;
+		}
 
 }
