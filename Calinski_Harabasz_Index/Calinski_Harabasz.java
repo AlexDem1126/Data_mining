@@ -335,12 +335,13 @@ public class Calinski_Harabasz {
 
 		
 		
-		public void kCalinski_Harabasz_Index() {
+		public double kCalinski_Harabasz_Index() {
 			double traceSSW = findTraceSSW();
 			double traceSSB = findTraceSSB();
 			
 			//Calinski_Harabasz_Index
-			
+			double CH_Index = ((numOfPoints - numOfClusters)/(numOfClusters - 1))*(traceSSB/traceSSW);
+			return CH_Index;
 		}
 
 
