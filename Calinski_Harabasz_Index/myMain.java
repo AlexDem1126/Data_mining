@@ -46,19 +46,22 @@ public class myMain {
 					while (R > 0) {
 						System.out.println("\nRun " + (count + 1) + "\n============================");
 						objCH.kMeanClusteringForCH(k_Min, I, T, null); //cluster, iteration, threshold, centroid
-						sSW_R[R] = objCH.getSSW();
-						sSB_R[R] = objCH.getSSB();						
+						sSW_R[count] = objCH.getSSW();
+						sSB_R[count] = objCH.getSSB();						
 						R--;
 						count++;
 					}
-					
-					objCH.kCalinski_Harabasz_Index(sSW_R, sSB_R);
-					k_Min++;
+					int smallestSSW = objCH.findSmallestSSW(sSW_R);
+					double sSW_Smallest = sSW_R[smallestSSW];
+					double sSB_Highest = sSB_R[smallestSSW];
+					CH[countCH] = objCH.kCalinski_Harabasz_Index(sSW_Smallest, sSB_Highest);
+					System.out.println("For K = " + k_Min + ", CH = " + CH[countCH]);
+					k_Min++; countCH++;
 				}
 				
-				/*********** END Calinski-Harabasz Index (CH) ***********/				
-		
-				
+				/*********** END Calinski-Harabasz Index (CH) ***********/	
+							
+												
 				
 			} catch (NumberFormatException e) {
 				System.out.println(
