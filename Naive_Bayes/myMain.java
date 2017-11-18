@@ -1,45 +1,46 @@
 package FP_AD_Fall2017;
 
+import java.io.File;
+
 public class myMain {
 
 	public static void main(String[] args) {
 
-		if (args.length > 0 && args.length < 6) {															
+		if (args.length > 0 && args.length < 2) {															
 			try {
 				
 				//N-fold cross validation
-				int numOfFolds = 10;				
+				int numOfFolds = 5;				
 				for (int nfolds = 0; nfolds < numOfFolds; nfolds++) {					
 					
-					String F = args[0]; 					// F is a file name
-					int K = Integer.parseInt(args[1]); 		// K is a number of clusters
-					int I = Integer.parseInt(args[2]); 		// I is a max number of iterations in any run
-					double T = Double.parseDouble(args[3]); // T is a convergence threshold
-					int R = Integer.parseInt(args[4]); 		// R is a number of runs
+					String F = args[0]; // F is a file name
 
-					System.out.println("F=" + F + " K=" + K + " I=" + I + " T=" + T + " R=" + R);	
+
+					System.out.println("F=" + F);	
 					System.out.println("******************************************************************");
 					System.out.println("##### "+ nfolds + " - fold cross validation #####");
 					System.out.println("******************************************************************");
 					
-					//get data from the file
+					//get data from the file.
 					manageFile_A objMF = new manageFile_A(F, nfolds);
 					
 //					String tr = "Training data set";
 //					String ts = "Testing data set";					
-//					objMF.writeDatasetToFile(objMF.getDataset(), tr);
-//					objMF.writeDatasetToFile(objMF.getDatasetTest(), ts);
-			
-				
+//					objMF.writeDatasetToFile(objMF.getDataset(), tr, nfolds, objMF.getNumOfPoints());
+//					objMF.writeDatasetToFile(objMF.getDatasetTest(), ts, nfolds, objMF.getNumOfPointsTest());
+					
 					
 					//******************************************************************
-					/*********** Naive Bayes Classifier (NB) ***********/
+					/*********** Naive Bayes Classifier (NB) WITH Laplace Smoothing ***********/
 					//******************************************************************
-					System.out.println("\n***** Naive Bayes Classifier (NB) *****");
-					Naive_Bayes objNB = new Naive_Bayes(objMF.getTrueGrade(), objMF.getDataset(), objMF.getNumOfPoints(), objMF.getNumOfDimension());
-					objNB.Naive_Bayes_Test(objMF.getDatasetTest(), objMF.getTrueGradeTest(), objMF.getNumOfPointsTest());
+					System.out.println("\n***** Naive Bayes Classifier (NB) WITH Laplace Smoothing *****");
+					Naive_Bayes_with_Laplace_Smoothing objNB_wLS = new Naive_Bayes_with_Laplace_Smoothing(objMF.getTrueGrade(), objMF.getDataset(), objMF.getNumOfPoints(), objMF.getNumOfDimension());
+					objNB_wLS.Naive_Bayes_Test(objMF.getDatasetTest(), objMF.getTrueGradeTest(), objMF.getNumOfPointsTest());
 					
-					/*********** END Naive Bayes Classifier (NB) ***********/
+					/*********** END Naive Bayes Classifier (NB) WITH Laplace Smoothing***********/
+							
+
+					
 					
 										
 				}//End N-fold cross validation		
